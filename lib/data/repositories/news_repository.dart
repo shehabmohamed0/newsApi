@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:http/http.dart' as http;
 import 'package:news/data/data_providers/news_api.dart';
 import 'package:news/data/models/article.dart';
 

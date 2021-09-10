@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:http/http.dart' as http;
-import 'package:news/data/data_providers/news_api.dart';
 import 'package:news/data/repositories/news_repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:news/data/models/article.dart';
@@ -13,8 +10,6 @@ import 'package:news/data/models/article.dart';
 part 'article_event.dart';
 
 part 'article_state.dart';
-
-const _apiKey = 'ad5fd66639b84f6fab0a3abb846aa9fb';
 
 class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
   NewsRepository newsRepository;
