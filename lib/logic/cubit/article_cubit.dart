@@ -21,13 +21,13 @@ class ArticleCubit extends Cubit<ArticleState> {
         final articles = await newsRepository.getArticles(
             pageIndex: 1, category: NewsCategory.sports);
 
-        emit(ArticleSuccessState(articles: articles, page: 2));
+        emit(ArticleSuccessState(articles: articles, page: 1));
       }
 
       if (state is ArticleSuccessState) {
         final currentState = state as ArticleSuccessState;
         final articles = await newsRepository.getArticles(
-            pageIndex: currentState.page, category: NewsCategory.sports);
+            pageIndex: currentState.page + 1, category: NewsCategory.sports);
 
         articles.isEmpty
             ? emit(currentState.copyWith(hasReachedMax: true))
@@ -44,8 +44,11 @@ class ArticleCubit extends Cubit<ArticleState> {
     emit(ArticleInitialState());
     final articles =
         await newsRepository.getArticles(pageIndex: 1, category: categoryName);
-    emit(
-        ArticleSuccessState(articles: articles, page: 2, hasReachedMax: false));
+    emit(ArticleSuccessState(
+        articles: articles,
+        categoryName: categoryName,
+        page: 1,
+        hasReachedMax: false));
   }
 
   void dispose() {

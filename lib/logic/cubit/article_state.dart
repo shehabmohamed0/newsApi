@@ -38,7 +38,7 @@ class ArticleSuccessState extends ArticleState {
 
   @override
   String toString() {
-    return '''ArticleState { hasReachedMax: $hasReachedMax, posts: ${articles.length} page: $page}''';
+    return '''ArticleState {category: $categoryName posts: ${articles.length} page: $page hasReachedMax: $hasReachedMax,}''';
   }
 
   @override
