@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news/logic/bloc/article_bloc.dart';
+import 'package:news/logic/cubit/article_cubit.dart';
 
 import 'article_card.dart';
 import 'bottom_loader.dart';
@@ -14,41 +14,39 @@ class ArticlesList extends StatefulWidget {
 
 class _ArticlesListState extends State<ArticlesList> {
   final _scrollController = ScrollController();
-  late ArticleBloc _articleBloc;
+  late ArticleCubit _articleCubit;
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _articleBloc = context.read<ArticleBloc>();
+    _articleCubit = context.read<ArticleCubit>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArticleBloc, ArticleState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case ArticleStatus.failure:
-            return const Center(child: Text('failed to fetch articles'));
-          case ArticleStatus.success:
-            if (state.articles.isEmpty) {
-              return const Center(child: Text('no articles'));
-            }
-            return ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return index >= state.articles.length
-                    ? BottomLoader()
-                    : ArticleCard(article: state.articles[index]);
-              },
-              itemCount: state.hasReachedMax
-                  ? state.articles.length
-                  : state.articles.length + 1,
-              controller: _scrollController,
-            );
-          default:
-            return const Center(child: CircularProgressIndicator());
+    return BlocBuilder<ArticleCubit, ArticleState>(builder: (context, state) {
+      if (state is ArticleFailureState) {
+        return const Center(child: const Text('failed to fetch articles'));
+      } else if (state is ArticleSuccessState) {
+        if (state.articles.isEmpty) {
+          return const Center(child: const Text('no articles'));
         }
-      },
-    );
+        return ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            return index >= state.articles.length
+                ? BottomLoader()
+                : ArticleCard(article: state.articles[index]);
+          },
+          itemCount: state.hasReachedMax
+              ? state.articles.length
+              : state.articles.length + 1,
+          controller: _scrollController,
+        );
+      } else {
+        return const Center(child: CircularProgressIndicator());
+      }
+    });
   }
 
   @override
@@ -58,7 +56,7 @@ class _ArticlesListState extends State<ArticlesList> {
   }
 
   void _onScroll() {
-    if (_isBottom) _articleBloc.add(ArticleFetchedEvent());
+    if (_isBottom) _articleCubit.fetchArticles();
   }
 
   bool get _isBottom {

@@ -11,11 +11,13 @@ class NewsApi {
   NewsApi._init();
 
   //get the articles from the api as list
-  Future<List<dynamic>> fetchArticles({required int pageIndex}) async {
+  Future<List<dynamic>> fetchArticles(
+      {required int pageIndex, required String category}) async {
     final response =
         await _httpClient.get(Uri.parse('https://newsapi.org/v2/top'
             '-headlines?'
             'country=eg'
+            '&category=$category'
             '&page=$pageIndex'
             '&apiKey=$_apiKey'));
     if (response.statusCode == 200) {
